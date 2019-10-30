@@ -1,0 +1,4 @@
+ 
+https://github.com/dejanmeznarc/MPU9250
+
+Maintained by dejan@meznarc.si
