@@ -1,5 +1,5 @@
 /*
-Servo library using shared TIMER1 infrastructure
+FastESC library using shared TIMER1 infrastructure
 
 Original Copyright (c) 2015 Michael C. Miller. All right reserved.
 
@@ -18,15 +18,15 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#if defined(ESP8266)
+//#if defined(ESP8266)
 
 #include <Arduino.h>
-#include <Servo.h>
+#include "FastESC.h"
 #include "core_esp8266_waveform.h"
 
 // similiar to map but will have increased accuracy that provides a more
 // symetric api (call it and use result to reverse will provide the original value)
-int improved_map(int value, int minIn, int maxIn, int minOut, int maxOut)
+int improved_map_2(int value, int minIn, int maxIn, int minOut, int maxOut)
 {
     const int rangeIn = maxIn - minIn;
     const int rangeOut = maxOut - minOut;
@@ -39,9 +39,9 @@ int improved_map(int value, int minIn, int maxIn, int minOut, int maxOut)
 }
 
 //-------------------------------------------------------------------
-// Servo class methods
+// FastESC class methods
 
-Servo::Servo()
+FastESC::FastESC()
 {
   _attached = false;
   _valueUs = DEFAULT_PULSE_WIDTH;
@@ -49,17 +49,17 @@ Servo::Servo()
   _maxUs = MAX_PULSE_WIDTH;
 }
 
-Servo::~Servo() {
+FastESC::~FastESC() {
   detach();
 }
 
 
-uint8_t Servo::attach(int pin)
+uint8_t FastESC::attach(int pin)
 {
   return attach(pin, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
 }
 
-uint8_t Servo::attach(int pin, uint16_t minUs, uint16_t maxUs)
+uint8_t FastESC::attach(int pin, uint16_t minUs, uint16_t maxUs)
 {
   if (!_attached) {
     digitalWrite(pin, LOW);
@@ -69,7 +69,7 @@ uint8_t Servo::attach(int pin, uint16_t minUs, uint16_t maxUs)
   }
 
   // keep the min and max within 200-3000 us, these are extreme
-  // ranges and should support extreme servos while maintaining
+  // ranges and should support extreme FastESCs while maintaining
   // reasonable ranges
   _maxUs = max((uint16_t)250, min((uint16_t)3000, maxUs));
   _minUs = max((uint16_t)200, min(_maxUs, minUs));
@@ -79,7 +79,7 @@ uint8_t Servo::attach(int pin, uint16_t minUs, uint16_t maxUs)
   return pin;
 }
 
-void Servo::detach()
+void FastESC::detach()
 {
   if (_attached) {
     stopWaveform(_pin);
@@ -88,20 +88,20 @@ void Servo::detach()
   }
 }
 
-void Servo::write(int value)
+void FastESC::write(int value)
 {
   // treat values less than 544 as angles in degrees (valid values in microseconds are handled as microseconds)
   if (value < _minUs) {
-    // assumed to be 0-180 degrees servo
+    // assumed to be 0-180 degrees FastESC
     value = constrain(value, 0, 180);
     // writeMicroseconds will contrain the calculated value for us
     // for any user defined min and max, but we must use default min max
-    value = improved_map(value, 0, 180, _minUs, _maxUs);
+    value = improved_map_2(value, 0, 180, _minUs, _maxUs);
   }
   writeMicroseconds(value);
 }
 
-void Servo::writeMicroseconds(int value)
+void FastESC::writeMicroseconds(int value)
 {
   _valueUs = value;
   if (_attached) {
@@ -109,21 +109,22 @@ void Servo::writeMicroseconds(int value)
   }
 }
 
-int Servo::read() // return the value as degrees
+int FastESC::read() // return the value as degrees
 {
-  // read returns the angle for an assumed 0-180, so we calculate using 
+  // read returns the angle 
+  // for an assumed 0-180, so we calculate using 
   // the normal min/max constants and not user defined ones
-  return improved_map(readMicroseconds(), _minUs, _maxUs, 0, 180);
+  return improved_map_2(readMicroseconds(), _minUs, _maxUs, 0, 180);
 }
 
-int Servo::readMicroseconds()
+int FastESC::readMicroseconds()
 {
   return _valueUs;
 }
 
-bool Servo::attached()
+bool FastESC::attached()
 {
   return _attached;
 }
 
-#endif
+//#endif

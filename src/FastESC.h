@@ -39,8 +39,8 @@
 //   detach()    - Stops an attached servos from pulsing its i/o pin.
   
 
-#ifndef Servo_h
-#define Servo_h
+#ifndef Servo_h23
+#define Servo_h23
 
 #include <Arduino.h>
 
@@ -49,22 +49,21 @@
 #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo  
 #define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo 
 #define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
-#define REFRESH_INTERVAL    30000     // minumim time to refresh servos in microseconds
+#define REFRESH_INTERVAL     3990     // minumim time to refresh servos in microseconds
 
-#warning "TO SE UPORABLA"
 #if !defined(ESP8266)
 
-#warning "This library only supports esp8266 boards."
+//#error "This library only supports esp8266 boards."
 
 #endif
 
-class Servo
+class FastESC
 {
 public:
-    Servo();
-    //~Servo();
+    FastESC();
+    ~FastESC();
     uint8_t attach(int pin);           // attach the given pin to the next free channel, sets pinMode, returns channel number or 0 if failure
-    //uint8_t attach(int pin, uint16_t min, uint16_t max); // as above but also sets min and max values for writes.
+    uint8_t attach(int pin, uint16_t min, uint16_t max); // as above but also sets min and max values for writes. 
     void detach();
     void write(int value);             // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds 
     void writeMicroseconds(int value); // Write pulse width in microseconds 

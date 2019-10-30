@@ -6,8 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-Servo	  KEYWORD1	Servo
-FastServo KEYWORD1  FastServo
+Servo	KEYWORD1	Servo
 
 #######################################
 # Methods and Functions (KEYWORD2)
