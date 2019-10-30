@@ -53,7 +53,7 @@
 
 #if !defined(ESP8266)
 
-#error "This library only supports esp8266 boards."
+#warning "This library only supports esp8266 boards."
 
 #endif
 
@@ -61,9 +61,9 @@ class Servo
 {
 public:
     Servo();
-    ~Servo();
+    //~Servo();
     uint8_t attach(int pin);           // attach the given pin to the next free channel, sets pinMode, returns channel number or 0 if failure
-    uint8_t attach(int pin, uint16_t min, uint16_t max); // as above but also sets min and max values for writes. 
+    //uint8_t attach(int pin, uint16_t min, uint16_t max); // as above but also sets min and max values for writes.
     void detach();
     void write(int value);             // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds 
     void writeMicroseconds(int value); // Write pulse width in microseconds 
